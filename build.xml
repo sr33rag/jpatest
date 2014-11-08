@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jpatest" default="compile" basedir=".">
+
+  <property name="src.dir" value="src/java/main"/>
+  <property name="build.dir" value="build"/>
+  <property name="dist.dir" value="dist"/>
+  <property name="resources.dir" value="resources"/>
+  <property name="jar-file" value="${ant.project.name}.jar"/>
+  <property name="test.src.dir" value="src/java/test"/>
+  <property name="test.build.dir" value="tbuild"/>
+  <property name="temp.dir" value="temp"/>
+  <property name="libs.dir" value="libs"/>
+
+  <path id="project.classpath">
+    <fileset file="${libs.dir}/openjpa-all-2.2.2.jar"/>
+  </path>
+
+  <target name="init" description="Initialises the project directory">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+    <mkdir dir="${temp.dir}"/>
+  </target>
+
+  <target name="clean" description="Cleans the project directory">
+     <delete dir="${temp.dir}"/>
+     <delete dir="${dist.dir}"/>
+     <delete dir="${build.dir}"/>
+  </target>
+
+  <target name="compile" description="Compiles the source code to the build directory" depends="clean, init">
+    <javac srcdir="${src.dir}" 
+        destdir="${build.dir}"
+        includeantruntime="true">
+        <classpath refid="project.classpath"/>
+    </javac>
+  </target>
+
+  <target name="buildJar" description="Packages the compiled source code into a distrubutable java archive file" depends="compile">
+    <mkdir dir="${temp.dir}/META-INF"/>
+    <copy todir="${temp.dir}">
+      <fileset dir="${build.dir}"/>
+    </copy>
+    <copy todir="${temp.dir}/META-INF" file="${resources.dir}/persistence.xml"/>
+    <jar file="${dist.dir}/${jar-file}" basedir="${temp.dir}" compress="false"/>
+    <delete dir="${temp.dir}"/>
+  </target>
+
+  <target name="runTest" description="Runs the example" depends="buildJar">
+     <delete dir="${test.build.dir}"/>
+     <mkdir dir="${test.build.dir}"/>
+	 <echo>Compiling the test class</echo>
+     <javac srcdir="${test.src.dir}" destdir="${test.build.dir}" includeantruntime="true" debug="true">
+        <classpath>
+          <fileset file="${dist.dir}/${jar-file}"/>
+          <fileset file="${libs.dir}/openjpa-all-2.2.2.jar"/>
+        </classpath>
+     </javac>
+	 <echo>Running the test class</echo>
+     <java dir="${test.build.dir}"
+         classname="tester.JPASample"
+         failonerror="true"
+         fork="true">        
+        <classpath>
+            <fileset file="${dist.dir}/${jar-file}"/>
+            <fileset file="${libs.dir}/openjpa-all-2.2.2.jar"/>
+        </classpath>
+		<sysproperty key="DEBUG" value="true"/>
+     </java>     
+  </target>
+</project>

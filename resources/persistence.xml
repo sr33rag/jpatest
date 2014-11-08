@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" version="2.0">
+  <persistence-unit name="JPATest23PU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+    <class>net.jpatest.entity.Student</class>
+	<class>net.jpatest.entity.Employee</class>
+	<class>net.jpatest.entity.Passport</class>
+    <properties>
+      <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema"/>
+      <property name="openjpa.ConnectionDriverName" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+      <property name="openjpa.ConnectionURL" value="jdbc:derby:D:\Sree19\custom\derbydbs\jpatestdb;create=true;"/>
+      <property name="javax.persistence.jdbc.user" value="user12"/>
+      <property name="javax.persistence.jdbc.password" value="34klq*"/>
+      <property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
+    </properties>
+  </persistence-unit>
+</persistence>
